@@ -1,0 +1,154 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function getUserRole() {
+      let userDoc = get(/databases/$(database)/documents/users/$(request.auth.uid));
+      return userDoc != null ? userDoc.data.role : null;
+    }
+    
+    function isAdmin() {
+      return getUserRole() == 'admin';
+    }
+    
+    function isCoordinator() {
+      return getUserRole() == 'coordinator';
+    }
+    
+    function isSupervisor() {
+      return getUserRole() == 'supervisor';
+    }
+    
+    function isStudent() {
+      return getUserRole() == 'student';
+    }
+    
+    function isAdminOrCoordinator() {
+      return isAdmin() || isCoordinator();
+    }
+    
+    function isAdminOrCoordinatorOrSupervisor() {
+      return isAdmin() || isCoordinator() || isSupervisor();
+    }
+    
+    function isOwner(userId) {
+      return request.auth.uid == userId;
+    }
+    
+    function isProjectParticipant(projectData) {
+      return isOwner(projectData.studentId) || isOwner(projectData.supervisorId);
+    }
+    
+    function isConversationParticipant(conversationData) {
+      return request.auth.uid in conversationData.participants;
+    }
+    
+    // Users collection - More permissive for authenticated users
+    match /users/{userId} {
+      // Allow read for authenticated users - needed for role checking
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated() && isOwner(userId);
+      allow create: if isAuthenticated() && isOwner(userId);
+      allow delete: if isAuthenticated() && isAdmin();
+    }
+    
+    // Projects collection
+    match /projects/{projectId} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated() && (
+        isProjectParticipant(resource.data) || isAdminOrCoordinator()
+      );
+      allow create: if isAuthenticated() && isStudent();
+      allow delete: if isAuthenticated() && (
+        isOwner(resource.data.studentId) || isAdmin()
+      );
+      
+      // Messages subcollection
+      match /messages/{messageId} {
+        allow read, write: if isAuthenticated() && (
+          isProjectParticipant(get(/databases/$(database)/documents/projects/$(projectId)).data) || 
+          isAdminOrCoordinator()
+        );
+        allow create: if isAuthenticated() && (
+          isProjectParticipant(get(/databases/$(database)/documents/conversations/$(projectId)).data)
+        );
+      }
+    }
+    
+    // Chatbot interactions
+    match /chatbot/{interactionId} {
+      allow read, write: if isAuthenticated() && 
+                        isOwner(resource.data.userId);
+      allow create: if isAuthenticated();
+    }
+    
+    // Notifications - More permissive
+    match /notifications/{notificationId} {
+      allow read, list: if isAuthenticated();
+      allow write: if isAuthenticated();
+      allow create: if isAuthenticated();
+      allow update: if isAuthenticated();
+      allow delete: if isAuthenticated();
+    }
+    
+    // File metadata (for uploaded files)
+    match /files/{fileId} {
+      allow read: if isAuthenticated() && (
+        isOwner(resource.data.uploadedBy) || 
+        (resource.data.projectId != null && 
+         isProjectParticipant(get(/databases/$(database)/documents/projects/$(resource.data.projectId)).data)) ||
+        isAdminOrCoordinator()
+      );
+      allow write: if isAuthenticated() && isOwner(resource.data.uploadedBy);
+      allow create: if isAuthenticated();
+      allow delete: if isAuthenticated() && (
+        isOwner(resource.data.uploadedBy) || isAdmin()
+      );
+    }
+    
+    // Conversations collection - More permissive
+    match /conversations/{conversationId} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated() && (
+        isConversationParticipant(resource.data) || 
+        isAdminOrCoordinator()
+      );
+      allow create: if isAuthenticated();
+      allow delete: if isAuthenticated() && (
+        isConversationParticipant(resource.data) || 
+        isAdmin()
+      );
+      
+      // Messages subcollection within conversations
+      match /messages/{messageId} {
+        allow read: if isAuthenticated();
+        allow write: if isAuthenticated() && (
+          isConversationParticipant(get(/databases/$(database)/documents/conversations/$(conversationId)).data) ||
+          isAdminOrCoordinator()
+        );
+        allow create: if isAuthenticated();
+        allow update: if isAuthenticated() && (
+          isConversationParticipant(get(/databases/$(database)/documents/conversations/$(conversationId)).data) ||
+          isAdminOrCoordinator()
+        );
+        allow delete: if isAuthenticated() && (
+          isConversationParticipant(get(/databases/$(database)/documents/conversations/$(conversationId)).data) ||
+          isAdminOrCoordinator()
+        ) && isOwner(resource.data.senderId);
+      }
+    }
+    
+    // Global messages collection (for backward compatibility)
+    match /messages/{messageId} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated();
+      allow create: if isAuthenticated();
+      allow update: if isAuthenticated();
+      allow delete: if isAuthenticated() && isOwner(resource.data.senderId);
+    }
+  }
+} 

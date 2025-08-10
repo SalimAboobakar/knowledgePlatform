@@ -1,46 +1,226 @@
-# Getting Started with Create React App
+# منصة عمان المعرفية - Oman Knowledge Platform
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## 🎯 نظرة عامة على المشروع
 
-## Available Scripts
+منصة عمان المعرفية هي منصة أكاديمية متكاملة مصممة لتعزيز التعاون البحثي والأكاديمي في سلطنة عمان. توفر المنصة بيئة رقمية متقدمة لإدارة المشاريع البحثية، التواصل الأكاديمي، وإدارة المعرفة.
 
-In the project directory, you can run:
+## 🌟 المميزات الرئيسية
 
-### `npm start`
+### 👥 إدارة المستخدمين
+- نظام تسجيل دخول متقدم مع Firebase Authentication
+- ثلاثة أنواع من المستخدمين: طلاب، مشرفون، إداريون
+- ملفات شخصية شاملة مع إدارة الصلاحيات
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+### 📋 إدارة المشاريع
+- إنشاء وإدارة المشاريع البحثية
+- نظام مهام متقدم مع تتبع التقدم
+- إدارة الفرق البحثية
+- نظام أولويات ومواعيد نهائية
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+### 💬 نظام التواصل
+- محادثات فورية بين أعضاء الفرق
+- إرسال واستقبال الملفات
+- إشعارات فورية للمستجدات
+- مجموعات عمل متخصصة
 
-### `npm test`
+### 🤖 المساعد الذكي
+- مساعد أكاديمي ذكي باستخدام Gemini AI
+- مساعدة في كتابة الأبحاث والمشاريع
+- اقتراحات للتحسين والتطوير
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### 📚 المكتبة الرقمية
+- إدارة الموارد التعليمية
+- تصنيف متقدم للمحتوى
+- نظام بحث ذكي
 
-### `npm run build`
+### 📊 التقارير والإحصائيات
+- تقارير تفصيلية عن المشاريع
+- إحصائيات الأداء والإنتاجية
+- رسوم بيانية تفاعلية
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## 🛠️ التقنيات المستخدمة
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### Frontend
+- **React 18** - مكتبة واجهة المستخدم
+- **TypeScript** - لغة البرمجة
+- **Material-UI (MUI)** - مكونات واجهة المستخدم
+- **React Router** - إدارة التنقل
+- **React Hook Form** - إدارة النماذج
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### Backend & Database
+- **Firebase** - منصة تطوير متكاملة
+- **Firestore** - قاعدة بيانات NoSQL
+- **Firebase Authentication** - نظام المصادقة
+- **Firebase Storage** - تخزين الملفات
+- **Firebase Functions** - دوال سحابية
 
-### `npm run eject`
+### AI & APIs
+- **Google Gemini AI** - المساعد الذكي
+- **OpenAI API** - معالجة النصوص المتقدمة
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+### Development Tools
+- **ESLint** - فحص جودة الكود
+- **Prettier** - تنسيق الكود
+- **Git** - إدارة الإصدارات
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## 🚀 التثبيت والتشغيل
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+### المتطلبات الأساسية
+- Node.js (v16 أو أحدث)
+- npm أو yarn
+- حساب Firebase
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+### خطوات التثبيت
 
-## Learn More
+1. **استنساخ المشروع**
+```bash
+git clone https://github.com/SalimAboobakar/knowledgePlatform.git
+cd knowledgePlatform
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+2. **تثبيت التبعيات**
+```bash
+npm install
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+3. **إعداد Firebase**
+   - أنشئ مشروع Firebase جديد
+   - فعّل Authentication و Firestore و Storage
+   - انسخ بيانات التكوين إلى ملف `.env`
+
+4. **تكوين ملف البيئة**
+```bash
+cp env.example .env
+# عدّل ملف .env بإضافة بيانات Firebase الخاصة بك
+```
+
+5. **تشغيل المشروع محلياً**
+```bash
+npm start
+```
+
+6. **بناء المشروع للإنتاج**
+```bash
+npm run build
+```
+
+## 📁 هيكل المشروع
+
+```
+najah-platform/
+├── public/                 # الملفات العامة
+├── src/
+│   ├── components/         # مكونات React
+│   │   ├── auth/          # مكونات المصادقة
+│   │   ├── chat/          # نظام المحادثات
+│   │   ├── dashboard/     # لوحة التحكم
+│   │   ├── projects/      # إدارة المشاريع
+│   │   ├── users/         # إدارة المستخدمين
+│   │   └── common/        # مكونات مشتركة
+│   ├── services/          # خدمات API
+│   ├── contexts/          # React Contexts
+│   ├── hooks/             # Custom Hooks
+│   └── types/             # تعريفات TypeScript
+├── functions/             # Firebase Functions
+└── docs/                  # الوثائق
+```
+
+## 🔧 الإعدادات المتقدمة
+
+### إعداد Firebase Functions
+```bash
+cd functions
+npm install
+npm run build
+firebase deploy --only functions
+```
+
+### إعداد قواعد Firestore
+```bash
+firebase deploy --only firestore:rules
+```
+
+### إعداد قواعد Storage
+```bash
+firebase deploy --only storage
+```
+
+## 📱 الميزات المتقدمة
+
+### نظام الصلاحيات
+- **الطلاب**: عرض المشاريع المخصصة لهم
+- **المشرفون**: إدارة المشاريع والطلاب
+- **الإداريون**: إدارة كاملة للنظام
+
+### الأمان
+- مصادقة متقدمة مع Firebase
+- قواعد أمان Firestore
+- تشفير البيانات الحساسة
+
+### الأداء
+- تحميل تدريجي للمحتوى
+- تخزين مؤقت ذكي
+- تحسين الصور والملفات
+
+## 🌐 النشر
+
+### Firebase Hosting
+```bash
+npm run build
+firebase deploy --only hosting
+```
+
+### رابط التطبيق المباشر
+https://wasla-fdf21.web.app
+
+## 📊 إحصائيات المشروع
+
+- **عدد الملفات**: 150+ ملف
+- **عدد المكونات**: 25+ مكون React
+- **عدد الخدمات**: 10+ خدمة API
+- **عدد الصفحات**: 15+ صفحة
+
+## 🤝 المساهمة
+
+نرحب بمساهماتكم! يرجى اتباع الخطوات التالية:
+
+1. Fork المشروع
+2. أنشئ فرع جديد للميزة
+3. اكتب الكود مع التعليقات
+4. أضف اختبارات إذا لزم الأمر
+5. أرسل Pull Request
+
+## 📄 الترخيص
+
+هذا المشروع مرخص تحت رخصة MIT. راجع ملف `LICENSE` للتفاصيل.
+
+## 👨‍💻 المطور
+
+**سليم أبو بكر** - Salim Aboobakar
+- البريد الإلكتروني: salim@example.com
+- GitHub: [@SalimAboobakar](https://github.com/SalimAboobakar)
+
+## 🙏 الشكر والتقدير
+
+- فريق Firebase للدعم التقني
+- مجتمع React للموارد التعليمية
+- جامعة السلطان قابوس للدعم الأكاديمي
+
+---
+
+## 🏆 معلومات المسابقة
+
+**اسم المسابقة**: مسابقة عمان الرقمية
+**الفئة**: تطبيقات التعليم والبحث العلمي
+**السنة**: 2024
+
+### معايير التقييم
+- ✅ الابتكار والحداثة
+- ✅ سهولة الاستخدام
+- ✅ الأمان والموثوقية
+- ✅ الأداء والسرعة
+- ✅ التكامل مع الأنظمة الأخرى
+
+---
+
+*تم تطوير هذا المشروع بدعم من وزارة التربية والتعليم العالي في سلطنة عمان*

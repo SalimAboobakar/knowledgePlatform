@@ -1,0 +1,70 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    // ملفات المشاريع
+    match /files/{fileId}/{fileName} {
+      // قراءة الملفات
+      allow read: if request.auth != null && (
+        // المالك يمكنه القراءة
+        request.auth.uid == resource.metadata.uploadedBy ||
+        // المديرون والمنسقون يمكنهم القراءة
+        request.auth.token.role in ['admin', 'coordinator'] ||
+        // مشاركو المشروع يمكنهم القراءة
+        (resource.metadata.projectId != null && 
+         (request.auth.uid == get(/databases/$(database)/documents/projects/$(resource.metadata.projectId)).data.studentId ||
+          request.auth.uid == get(/databases/$(database)/documents/projects/$(resource.metadata.projectId)).data.supervisorId))
+      );
+      
+      // كتابة الملفات
+      allow write: if request.auth != null && 
+                   request.auth.uid == resource.metadata.uploadedBy;
+      
+      // حذف الملفات
+      allow delete: if request.auth != null && (
+        request.auth.uid == resource.metadata.uploadedBy ||
+        request.auth.token.role == 'admin'
+      );
+    }
+    
+    // ملفات الملف الشخصي (الصور)
+    match /avatars/{userId}/{fileName} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null && 
+                   request.auth.uid == userId;
+      allow delete: if request.auth != null && 
+                   request.auth.uid == userId;
+    }
+    
+    // ملفات المحادثات
+    match /conversations/{conversationId}/files/{fileName} {
+      allow read: if request.auth != null && (
+        // المشاركون في المحادثة يمكنهم القراءة
+        request.auth.uid in get(/databases/$(database)/documents/conversations/$(conversationId)).data.participants
+      );
+      
+      allow write: if request.auth != null && (
+        // المشاركون في المحادثة يمكنهم الكتابة
+        request.auth.uid in get(/databases/$(database)/documents/conversations/$(conversationId)).data.participants
+      );
+      
+      allow delete: if request.auth != null && (
+        // المشاركون في المحادثة يمكنهم الحذف
+        request.auth.uid in get(/databases/$(database)/documents/conversations/$(conversationId)).data.participants
+      );
+    }
+    
+    // ملفات الرفع العامة
+    match /uploads/{fileName} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null;
+      allow delete: if request.auth != null;
+    }
+    
+    // ملفات عامة (مثل الشعارات)
+    match /public/{fileName} {
+      allow read: if true; // أي شخص يمكنه القراءة
+      allow write: if request.auth != null && 
+                   request.auth.token.role in ['admin', 'coordinator'];
+    }
+  }
+} 
