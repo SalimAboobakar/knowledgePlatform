@@ -119,6 +119,12 @@ ${context ? `السياق الإضافي: ${context}` : ""}`;
       }
     } catch (error) {
       console.warn("Error calling Gemini API, using default responses:", error);
+      
+      // إذا كان الخطأ متعلق بـ CSP، نعطي رسالة أكثر وضوحاً
+      if (error instanceof TypeError && error.message.includes("Content Security Policy")) {
+        console.warn("CSP blocked Gemini API request. This is expected in development. Using default responses.");
+      }
+      
       return this.getDefaultResponse(message);
     }
   }

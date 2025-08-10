@@ -639,7 +639,13 @@ const AdvisorPage: React.FC = () => {
       };
       setMessages((prev) => [...prev, assistantMessage]);
     } catch (err) {
-      setError("حدث خطأ في الاتصال. يرجى المحاولة مرة أخرى.");
+      // رسالة أكثر وضوحاً للمستخدم
+      const errorMessage =
+        err instanceof Error && err.message.includes("Content Security Policy")
+          ? "المساعد الذكي يعمل في الوضع المحلي. سيتم استخدام الردود الافتراضية."
+          : "حدث خطأ في الاتصال. يرجى المحاولة مرة أخرى.";
+
+      setError(errorMessage);
       console.error("Error sending message:", err);
     } finally {
       setIsLoading(false);
